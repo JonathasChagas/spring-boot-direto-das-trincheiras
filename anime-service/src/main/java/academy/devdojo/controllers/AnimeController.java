@@ -1,6 +1,7 @@
 package academy.devdojo.controllers;
 
 import academy.devdojo.domain.Anime;
+import academy.devdojo.domain.Producer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,14 +14,14 @@ public class AnimeController {
 
     @GetMapping
     public List<Anime> listAll(@RequestParam(required = false) String name) {
-        if (name == null) return Anime.getAnimeList();
+        if (name == null) return Anime.getAnimes();
 
-        return Anime.getAnimeList().stream().filter(anime -> anime.getName().equalsIgnoreCase(name)).toList();
+        return Anime.getAnimes().stream().filter(anime -> anime.getName().equalsIgnoreCase(name)).toList();
     }
 
     @GetMapping("{id}")
     public Anime findById(@PathVariable Long id) {
-       return Anime.getAnimeList()
+       return Anime.getAnimes()
                .stream()
                .filter(anime -> anime.getId().equals(id))
                .findFirst().orElse(null);
@@ -28,10 +29,10 @@ public class AnimeController {
 
     @PostMapping
     public Anime save(@RequestBody Anime anime) {
-        long id = Anime.getAnimeList().stream().mapToLong(Anime::getId).max().orElseThrow(NoSuchElementException::new);
+        long id = Anime.getAnimes().stream().mapToLong(Anime::getId).max().orElseThrow(NoSuchElementException::new);
 
         anime.setId(id + 1);
-        Anime.getAnimeList().add(anime);
+        Anime.getAnimes().add(anime);
 
         return anime;
     }

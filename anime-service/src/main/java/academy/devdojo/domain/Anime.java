@@ -15,7 +15,7 @@ public class Anime
     private String name;
 
     @Getter
-    private static List<Anime> animeList = new ArrayList<>(List.of(
+    private static List<Anime> animes = new ArrayList<>(List.of(
             Anime.builder().name("Haikyuu").id(1L).build(),
             Anime.builder().name("Boku no Hero").id(2L).build(),
             Anime.builder().name("Naruto").id(3L).build(),
