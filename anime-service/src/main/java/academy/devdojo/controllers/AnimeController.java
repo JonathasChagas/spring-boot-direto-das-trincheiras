@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class AnimeController {
                 .filter(anime -> anime.getId().equals(id))
                 .findFirst()
                 .map(MAPPER::toAnimeGetResponse)
-                .orElse(null);
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not Found"));
 
         return ResponseEntity.ok(response);
     }
