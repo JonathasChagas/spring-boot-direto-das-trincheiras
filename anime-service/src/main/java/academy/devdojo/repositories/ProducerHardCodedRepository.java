@@ -18,24 +18,24 @@ public class ProducerHardCodedRepository {
         return PRODUCERS;
     }
 
-    public static Optional<Producer> findById(Long id) {
+    public Optional<Producer> findById(Long id) {
         return PRODUCERS.stream().filter(producer -> producer.getId().equals(id)).findFirst();
     }
 
-    public static List<Producer> findByName(String name) {
+    public List<Producer> findByName(String name) {
         return PRODUCERS.stream().filter(producer -> producer.getName().equalsIgnoreCase(name)).toList();
     }
 
-    public static Producer save(Producer producer) {
+    public Producer save(Producer producer) {
         PRODUCERS.add(producer);
         return producer;
     }
 
-    public static void delete(Producer producer) {
+    public void delete(Producer producer) {
         PRODUCERS.remove(producer);
     }
 
-    public static void update(Producer producer) {
+    public void update(Producer producer) {
         delete(producer);
         save(producer);
     }

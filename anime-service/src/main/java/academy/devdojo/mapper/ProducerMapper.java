@@ -18,9 +18,9 @@ public interface ProducerMapper {
     ProducerMapper INSTANCE = Mappers.getMapper(ProducerMapper.class);
 
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
-    @Mapping(target = "id", expression = "java(academy.devdojo.domain.Producer.getProducers().stream().mapToLong(Producer::getId).max().orElseThrow(java.util.NoSuchElementException::new) + 1)")
+    @Mapping(target = "id", expression = "java(academy.devdojo.repositories.ProducerHardCodedRepository.findAll().stream().mapToLong(Producer::getId).max().orElseThrow(java.util.NoSuchElementException::new) + 1)")
     Producer toProducer(ProducerPostRequest postRequest);
-    Producer toProducer(ProducerPutRequest putRequest, LocalDateTime createdAt);
+    Producer toProducer(ProducerPutRequest putRequest);
 
     ProducerPostResponse toProducerPostResponse(Producer producer);
 
