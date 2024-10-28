@@ -19,5 +19,3 @@ public class Anime {
     private String name;
     private LocalDateTime createdAt;
 }
-
-

@@ -1,14 +1,16 @@
 package academy.devdojo.repositories;
 
 import academy.devdojo.domain.Anime;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class AnimeHardCodedRepository {
-    private static List<Anime> ANIMES = new ArrayList<>(List.of(
+    private static final List<Anime> ANIMES = new ArrayList<>(List.of(
             Anime.builder().name("Haikyuu").id(1L).createdAt(LocalDateTime.now()).build(),
             Anime.builder().name("Boku no Hero").id(2L).createdAt(LocalDateTime.now()).build(),
             Anime.builder().name("Naruto").id(3L).createdAt(LocalDateTime.now()).build(),
