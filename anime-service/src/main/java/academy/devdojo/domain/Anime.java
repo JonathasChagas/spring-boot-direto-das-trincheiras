@@ -1,29 +1,23 @@
 package academy.devdojo.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
+@Getter
+@Setter
 @Builder
-@Data
-public class Anime
-{
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class Anime {
+    @EqualsAndHashCode.Include
     private Long id;
+    @JsonProperty("name")
     private String name;
     private LocalDateTime createdAt;
-
-    @Getter
-    private static List<Anime> animes = new ArrayList<>(List.of(
-            Anime.builder().name("Haikyuu").id(1L).createdAt(LocalDateTime.now()).build(),
-            Anime.builder().name("Boku no Hero").id(2L).createdAt(LocalDateTime.now()).build(),
-            Anime.builder().name("Naruto").id(3L).createdAt(LocalDateTime.now()).build(),
-            Anime.builder().name("Ansatsu Kyoushitsu").id(4L).createdAt(LocalDateTime.now()).build(),
-            Anime.builder().name("Shigatsu Wa Kimi no Uso").id(5L).createdAt(LocalDateTime.now()).build()
-    ));
-
 }
+
 

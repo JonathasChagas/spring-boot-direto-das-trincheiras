@@ -14,7 +14,7 @@ public interface AnimeMapper {
     AnimeMapper INSTANCE = Mappers.getMapper(AnimeMapper.class);
 
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
-    @Mapping(target = "id", expression = "java(academy.devdojo.domain.Anime.getAnimes().stream().mapToLong(Anime::getId).max().orElseThrow(java.util.NoSuchElementException::new) + 1)")
+    @Mapping(target = "id", expression = "java(academy.devdojo.repositories.AnimeHardCodedRepository.findAll().stream().mapToLong(Anime::getId).max().orElseThrow(java.util.NoSuchElementException::new) + 1)")
     Anime toAnime(AnimePostRequest postRequest);
     Anime toAnime(AnimePutRequest request);
 
