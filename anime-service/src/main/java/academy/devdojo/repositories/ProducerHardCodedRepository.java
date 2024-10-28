@@ -1,6 +1,8 @@
 package academy.devdojo.repositories;
 
 import academy.devdojo.domain.Producer;
+import external.dependency.Connection;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -9,12 +11,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class ProducerHardCodedRepository {
     private static final List<Producer> PRODUCERS = new ArrayList<>(List.of(
             Producer.builder().name("Mappa").id(1L).createdAt(LocalDateTime.now()).build(),
             Producer.builder().name("Kyoto Animation").id(2L).createdAt(LocalDateTime.now()).build(),
             Producer.builder().name("Madhouse").id(3L).createdAt(LocalDateTime.now()).build()
     ));
+
+    private final Connection connection;
 
     public static List<Producer> findAll() {
         return PRODUCERS;
