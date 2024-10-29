@@ -46,7 +46,9 @@ public class AnimeController {
     @PostMapping
     public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest animePostRequest) {
         log.debug("Request to save anime: '{}'", animePostRequest);
-        var anime = mapper.toAnime(animePostRequest);
+        Long id = service.getIdToNewSavedAnime();
+
+        var anime = mapper.toAnime(animePostRequest, id);
 
         service.save(anime);
 

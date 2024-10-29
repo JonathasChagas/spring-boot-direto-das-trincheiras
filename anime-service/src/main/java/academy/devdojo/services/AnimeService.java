@@ -36,6 +36,10 @@ public class AnimeService {
         repository.update(animeToUpdate);
     }
 
+    public Long getIdToNewSavedAnime() {
+        return repository.findAll().stream().mapToLong(Anime::getId).max().orElseThrow(java.util.NoSuchElementException::new) + 1;
+    }
+
     public void assertAnimeExists(Long id) {
         findByIdOrThrowNotFound(id);
     }
