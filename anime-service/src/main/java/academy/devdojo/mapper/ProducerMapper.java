@@ -14,8 +14,7 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ProducerMapper {
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
-    @Mapping(target = "id", expression = "java(academy.devdojo.repositories.ProducerHardCodedRepository.findAll().stream().mapToLong(Producer::getId).max().orElseThrow(java.util.NoSuchElementException::new) + 1)")
-    Producer toProducer(ProducerPostRequest postRequest);
+    Producer toProducer(ProducerPostRequest postRequest, Long id);
 
     Producer toProducer(ProducerPutRequest putRequest);
 

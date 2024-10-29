@@ -36,4 +36,8 @@ public class ProducerService {
         producerToUpdate.setCreatedAt(producer.getCreatedAt());
         repository.update(producerToUpdate);
     }
+
+    public Long getIdToNewSavedProducer() {
+        return repository.findAll().stream().mapToLong(Producer::getId).max().orElseThrow(java.util.NoSuchElementException::new) + 1;
+    }
 }

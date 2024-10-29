@@ -47,7 +47,9 @@ public class ProducerController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest producerPostRequest) {
         log.debug("Request to save producer: '{}'", producerPostRequest);
-        var producer = mapper.toProducer(producerPostRequest);
+
+        Long id = service.getIdToNewSavedProducer();
+        var producer = mapper.toProducer(producerPostRequest, id);
 
         Producer producerSaved = service.save(producer);
 
