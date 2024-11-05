@@ -15,15 +15,16 @@ public class AnimeService {
     private final AnimeHardCodedRepository repository;
 
     public List<Anime> findAll(String name) {
-        return name == null ? repository.findAll() : repository.findAll().stream().filter(anime -> anime.getName().equalsIgnoreCase(name)).toList();
+        return name == null ? repository.findAll() : repository.findByName(name);
     }
 
     public Anime findByIdOrThrowNotFound(Long id) {
         return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not Found"));
     }
 
-    public void save(Anime animeToSave) {
+    public Anime save(Anime animeToSave) {
         repository.save(animeToSave);
+        return animeToSave;
     }
 
     public void delete(Long id) {

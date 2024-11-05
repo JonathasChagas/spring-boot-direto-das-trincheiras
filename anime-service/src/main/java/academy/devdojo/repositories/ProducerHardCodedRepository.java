@@ -13,11 +13,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Log4j2
 public class ProducerHardCodedRepository {
-    private final Connection connection;
     private final ProducerData producerData;
 
     public List<Producer> findAll() {
-        log.info(connection);
         return producerData.getProducers();
     }
 
