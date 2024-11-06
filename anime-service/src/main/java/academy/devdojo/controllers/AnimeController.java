@@ -1,5 +1,6 @@
 package academy.devdojo.controllers;
 
+import academy.devdojo.domain.Anime;
 import academy.devdojo.mapper.AnimeMapper;
 import academy.devdojo.request.AnimePostRequest;
 import academy.devdojo.request.AnimePutRequest;
@@ -23,7 +24,7 @@ public class AnimeController {
     private final AnimeService service;
 
     @GetMapping
-    public ResponseEntity<List<AnimeGetResponse>> listAll(@RequestParam(required = false) String name) {
+    public ResponseEntity<List<AnimeGetResponse>> findAll(@RequestParam(required = false) String name) {
         log.debug("Request received to list all animes, param name: '{}'", name);
 
         var animes = service.findAll(name);
@@ -50,9 +51,9 @@ public class AnimeController {
 
         var anime = mapper.toAnime(animePostRequest, id);
 
-        service.save(anime);
+        Anime animeSaved = service.save(anime);
 
-        var animePostResponse = mapper.toAnimePostResponse(anime);
+        var animePostResponse = mapper.toAnimePostResponse(animeSaved);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(animePostResponse);
     }
