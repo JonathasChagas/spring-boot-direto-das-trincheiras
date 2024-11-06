@@ -25,7 +25,7 @@ public class ProducerController {
     private final ProducerService service;
 
     @GetMapping
-    public ResponseEntity<List<ProducerGetResponse>> listAll(@RequestParam(required = false) String name) {
+    public ResponseEntity<List<ProducerGetResponse>> findAll(@RequestParam(required = false) String name) {
         log.debug("Request received to list all producers, param name: '{}'", name);
 
         var producers = service.findAll(name);
@@ -44,7 +44,7 @@ public class ProducerController {
         return ResponseEntity.ok(producerGetResponse);
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, headers = "x-api-key")
     public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest producerPostRequest) {
         log.debug("Request to save producer: '{}'", producerPostRequest);
 
@@ -53,9 +53,9 @@ public class ProducerController {
 
         Producer producerSaved = service.save(producer);
 
-        var producerGetResponse = mapper.toProducerPostResponse(producerSaved);
+        var producerPostResponse = mapper.toProducerPostResponse(producerSaved);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(producerGetResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(producerPostResponse);
     }
 
     @DeleteMapping("{id}")

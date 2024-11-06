@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "name": "Ufotable",
+    "createdAt": "2024-11-05T12:17:12.5031944"
+  },
+  {
+    "id": 2,
+    "name": "Wit Studio",
+    "createdAt": "2024-11-05T12:17:12.5031944"
+  },
+  {
+    "id": 3,
+    "name": "Studio Ghibli",
+    "createdAt": "2024-11-05T12:17:12.5031944"
+  }
+]
