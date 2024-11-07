@@ -1,5 +1,6 @@
 package academy.devdojo.repositories;
 
+import academy.devdojo.commons.AnimeUtils;
 import academy.devdojo.domain.Anime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-
 @ExtendWith(MockitoExtension.class)
 class AnimeHardCodedRepositoryTest {
     @InjectMocks
@@ -22,15 +20,12 @@ class AnimeHardCodedRepositoryTest {
     @Mock
     AnimeData animeData;
     private List<Anime> animesList;
+    @InjectMocks
+    private AnimeUtils animeUtils;
 
     @BeforeEach
     void init() {
-        var haikyuu = Anime.builder().name("Dragon Ball Z").id(1L).createdAt(LocalDateTime.now()).build();
-        var bokuNoHero = Anime.builder().name("Durarara").id(2L).createdAt(LocalDateTime.now()).build();
-        var naruto = Anime.builder().name("Love Live").id(3L).createdAt(LocalDateTime.now()).build();
-        var ansatsuKyoushitsu = Anime.builder().name("Saiki Kusuo no Psi-nan").id(4L).createdAt(LocalDateTime.now()).build();
-        var shigatsuWaKimiNoUso = Anime.builder().name("Konosuba").id(5L).createdAt(LocalDateTime.now()).build();
-        animesList = new ArrayList<> (List.of(haikyuu, bokuNoHero, naruto, ansatsuKyoushitsu, shigatsuWaKimiNoUso));
+        animesList = animeUtils.newAnimeList();
     }
 
     @Test
@@ -76,7 +71,7 @@ class AnimeHardCodedRepositoryTest {
     void save_CreatesAnime_WhenSuccesful() {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
 
-        var animeToSave = Anime.builder().id(99L).name("Yu-gi-oh").createdAt(LocalDateTime.now()).build();
+        var animeToSave = animeUtils.newSavedProducer();
         var anime = repository.save(animeToSave);
 
         Assertions.assertThat(anime).isEqualTo(animeToSave).hasNoNullFieldsOrProperties();

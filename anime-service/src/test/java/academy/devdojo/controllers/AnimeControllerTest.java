@@ -1,9 +1,9 @@
 package academy.devdojo.controllers;
 
+import academy.devdojo.commons.AnimeUtils;
 import academy.devdojo.domain.Anime;
 import academy.devdojo.repositories.AnimeData;
 import academy.devdojo.repositories.AnimeHardCodedRepository;
-import academy.devdojo.services.AnimeService;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
@@ -21,15 +21,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebMvcTest(controllers = AnimeController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ComponentScan(basePackages = "academy.devdojo")
 class AnimeControllerTest {
+    private static final String URL = "/v1/animes";
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -39,19 +37,12 @@ class AnimeControllerTest {
     private List<Anime> animesList;
     @Autowired
     private ResourceLoader resourceLoader;
+    @Autowired
+    private AnimeUtils animeUtils;
 
     @BeforeEach
     void init() {
-        var dateTime = "2024-11-05T12:17:12.5031944";
-        var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
-        var localDateTime = LocalDateTime.parse(dateTime, dateTimeFormatter);
-
-        var dragonBallZ = Anime.builder().name("Dragon Ball Z").id(1L).createdAt(localDateTime).build();
-        var durarara = Anime.builder().name("Durarara").id(2L).createdAt(localDateTime).build();
-        var loveLive = Anime.builder().name("Love Live").id(3L).createdAt(localDateTime).build();
-        var saikiKusuo = Anime.builder().name("Saiki Kusuo no Psi-nan").id(4L).createdAt(localDateTime).build();
-        var konosuba = Anime.builder().name("Konosuba").id(5L).createdAt(localDateTime).build();
-        animesList = new ArrayList<>(List.of(dragonBallZ, durarara, loveLive, saikiKusuo, konosuba));
+        animesList = animeUtils.newAnimeList();
     }
 
     @Test
@@ -61,7 +52,7 @@ class AnimeControllerTest {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
         var response = readResourceFile("anime/get-anime-null-name-200.json");
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes"))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -75,7 +66,7 @@ class AnimeControllerTest {
         var response = readResourceFile("anime/get-anime-dragonballz-name-200.json");
         var name = "Dragon Ball Z";
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes").param("name", name))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL).param("name", name))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -89,7 +80,7 @@ class AnimeControllerTest {
         var response = readResourceFile("anime/get-anime-x-name-200.json");
         var name = "x";
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes").param("name", name))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL).param("name", name))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -103,7 +94,7 @@ class AnimeControllerTest {
         var response = readResourceFile("anime/get-anime-by-id-200.json");
         var id = 1L;
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes/{id}", id))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -116,7 +107,7 @@ class AnimeControllerTest {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
         var id = 99L;
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes/{id}", id))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("Anime not Found"));
@@ -128,13 +119,13 @@ class AnimeControllerTest {
     void save_CreatesAnime_WhenSuccesful() throws Exception {
         var request = readResourceFile("anime/post-request-anime-200.json");
         var response = readResourceFile("anime/post-response-anime-201.json");
-        var animeToSave = Anime.builder().name("Sailor Moon").id(99L).build();
+        var animeToSave = animeUtils.newSavedProducer();
 
         BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(animeToSave);
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/v1/animes")
+                        .post(URL)
                         .content(request)
                         .header("x-api-key", "v1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -153,7 +144,7 @@ class AnimeControllerTest {
         var request = readResourceFile("anime/put-request-anime-200.json");
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/v1/animes")
+                        .put(URL)
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -169,7 +160,7 @@ class AnimeControllerTest {
         var request = readResourceFile("anime/put-request-anime-404.json");
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/v1/animes")
+                        .put(URL)
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -185,7 +176,7 @@ class AnimeControllerTest {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
         Long id = animesList.getFirst().getId();
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/animes/{id}", id)
+        mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", id)
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
@@ -198,7 +189,7 @@ class AnimeControllerTest {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
         Long id = 99L;
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/animes/{id}", id)
+        mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", id)
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())

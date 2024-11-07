@@ -25,7 +25,7 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ComponentScan(basePackages = "academy.devdojo")
 class ProducerControllerTest {
-    private static final  String URL = "/v1/producers";
+    private static final String URL = "/v1/producers";
     @Autowired
     private MockMvc mockMvc;
     @MockBean
