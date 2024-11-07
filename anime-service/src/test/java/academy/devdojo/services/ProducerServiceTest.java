@@ -1,5 +1,6 @@
 package academy.devdojo.services;
 
+import academy.devdojo.commons.ProducerUtils;
 import academy.devdojo.domain.Producer;
 import academy.devdojo.repositories.ProducerHardCodedRepository;
 import org.assertj.core.api.Assertions;
@@ -12,8 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,13 +27,12 @@ class ProducerServiceTest {
     @Mock
     private ProducerHardCodedRepository repository;
     private List<Producer> producersList;
+    @InjectMocks
+    private ProducerUtils producerUtils;
 
     @BeforeEach
     void init() {
-        var ufotable = Producer.builder().name("Ufotable").id(1L).createdAt(LocalDateTime.now()).build();
-        var witStudio = Producer.builder().name("Wit Studio").id(2L).createdAt(LocalDateTime.now()).build();
-        var studioGhibli = Producer.builder().name("Studio Ghibli").id(3L).createdAt(LocalDateTime.now()).build();
-        producersList = new ArrayList<>(List.of(ufotable, witStudio, studioGhibli));
+        producersList = producerUtils.newProducerList();
     }
 
     @Test
@@ -89,7 +87,7 @@ class ProducerServiceTest {
         BDDMockito.when(repository.findById(expectedProducer.getId())).thenReturn(Optional.empty());
 
         Assertions.assertThatException()
-                .isThrownBy(() ->service.findByIdOrThrowNotFound(expectedProducer.getId()))
+                .isThrownBy(() -> service.findByIdOrThrowNotFound(expectedProducer.getId()))
                 .isInstanceOf(ResponseStatusException.class);
     }
 
@@ -97,7 +95,7 @@ class ProducerServiceTest {
     @DisplayName("save creates a producer")
     @Order(6)
     void save_CreatesProducer_WhenSuccesful() {
-        var producerToSave = Producer.builder().id(99L).name("A1 Studios").createdAt(LocalDateTime.now()).build();
+        var producerToSave = producerUtils.newProducerToSave();
         BDDMockito.when(repository.save(producerToSave)).thenReturn(producerToSave);
 
         var savedProducer = service.save(producerToSave);
@@ -124,7 +122,7 @@ class ProducerServiceTest {
         BDDMockito.when(repository.findById(producerToDelete.getId())).thenReturn(Optional.empty());
 
         Assertions.assertThatException()
-                .isThrownBy(() ->service.delete(producerToDelete.getId()))
+                .isThrownBy(() -> service.delete(producerToDelete.getId()))
                 .isInstanceOf(ResponseStatusException.class);
     }
 
@@ -149,7 +147,7 @@ class ProducerServiceTest {
         BDDMockito.when(repository.findById(ArgumentMatchers.anyLong())).thenReturn(Optional.empty());
 
         Assertions.assertThatException()
-                .isThrownBy(() ->service.update(producerToUpdate))
+                .isThrownBy(() -> service.update(producerToUpdate))
                 .isInstanceOf(ResponseStatusException.class);
     }
 }
