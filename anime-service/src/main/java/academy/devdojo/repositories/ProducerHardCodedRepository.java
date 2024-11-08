@@ -1,7 +1,7 @@
 package academy.devdojo.repositories;
 
 import academy.devdojo.domain.Producer;
-import external.dependency.Connection;
+import academy.devdojo.config.Connection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
@@ -14,8 +14,10 @@ import java.util.Optional;
 @Log4j2
 public class ProducerHardCodedRepository {
     private final ProducerData producerData;
+    private final Connection connection;
 
     public List<Producer> findAll() {
+        log.info("Connecion: '{}'", connection);
         return producerData.getProducers();
     }
 

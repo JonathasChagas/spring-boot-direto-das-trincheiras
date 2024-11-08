@@ -1,9 +1,9 @@
 package academy.devdojo.config;
 
-import external.dependency.Connection;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
@@ -16,6 +16,7 @@ public class ConnectionConfiguration {
     private String password;
 
     @Bean
+    @Primary
     public Connection connectionMySql() {
         return new Connection(url, username, password);
     }
