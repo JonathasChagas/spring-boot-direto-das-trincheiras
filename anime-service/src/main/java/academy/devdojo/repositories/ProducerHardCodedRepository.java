@@ -17,7 +17,7 @@ public class ProducerHardCodedRepository {
     private final Connection connection;
 
     public List<Producer> findAll() {
-        log.info("Connecion: '{}'", connection);
+        log.info("Connection: '{}'", connection);
         return producerData.getProducers();
     }
 
