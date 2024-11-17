@@ -5,7 +5,11 @@ import academy.devdojo.commons.ProducerUtils;
 import academy.devdojo.domain.Producer;
 import academy.devdojo.repositories.ProducerData;
 import academy.devdojo.repositories.ProducerHardCodedRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +23,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @WebMvcTest(controllers = ProducerController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -194,4 +200,74 @@ class ProducerControllerTest {
                 .andExpect(MockMvcResultMatchers.status().reason("PRODUCER NOT FOUND"));
     }
 
+    @ParameterizedTest
+    @MethodSource("postProducerBadRequestSource")
+    @DisplayName("POST v1/producers returns bad request when fields are invalid")
+    @Order(11)
+    void save_ReturnsBadRequest_WhenFieldsAreInvalid(String fileName, List<String> errors) throws Exception {
+        var request = fileUtils.readResourceFile("producer/%s".formatted(fileName));
+
+        var mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                        .post(URL)
+                        .content(request)
+                        .header("x-api-key", "v1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+
+        var resolvedException = mvcResult.getResolvedException();
+
+        org.assertj.core.api.Assertions.assertThat(resolvedException).isNotNull();
+
+        Assertions.assertThat(resolvedException.getMessage()).contains(errors);
+    }
+
+    @ParameterizedTest
+    @MethodSource("putProducerBadRequestSource")
+    @DisplayName("PUT v1/producers returns bad request when fields are invalid")
+    @Order(12)
+    void update_ReturnsBadRequest_WhenFieldsAreInvalid(String fileName, List<String> errors) throws Exception {
+        var request = fileUtils.readResourceFile("producer/%s".formatted(fileName));
+
+        var mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                        .put(URL)
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+
+        var resolvedException = mvcResult.getResolvedException();
+
+        Assertions.assertThat(resolvedException).isNotNull();
+
+        Assertions.assertThat(resolvedException.getMessage()).contains(errors);
+    }
+
+    private static Stream<Arguments> postProducerBadRequestSource() {
+        var allErrors = allRequiredErrors();
+
+        return Stream.of(
+                Arguments.of("post-request-producer-blank-fields-400.json", allErrors),
+                Arguments.of("post-request-producer-empty-fields-400.json", allErrors)
+        );
+    }
+
+    private static Stream<Arguments> putProducerBadRequestSource() {
+        var allErrors = allRequiredErrors();
+        allErrors.add("The field 'id' is required");
+
+        return Stream.of(
+                Arguments.of("put-request-producer-blank-fields-400.json", allErrors),
+                Arguments.of("put-request-producer-empty-fields-400.json", allErrors)
+        );
+    }
+
+    private static List<String> allRequiredErrors() {
+        var nameError = "The field 'name' is required";
+        return new ArrayList<>(List.of(nameError));
+    }
 }

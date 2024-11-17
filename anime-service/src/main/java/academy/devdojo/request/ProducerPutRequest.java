@@ -1,15 +1,17 @@
 package academy.devdojo.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @ToString
 public class ProducerPutRequest {
+    @NotNull(message = "The field 'id' is required")
     private Long id;
+    @NotBlank(message = "The field 'name' is required")
     private String name;
 }
