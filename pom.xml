@@ -8,7 +8,8 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>commons-core</module>
 		<module>anime-service</module>
 		<module>user-service-SBDDT</module>
-	</modules>
+    </modules>
 </project>
