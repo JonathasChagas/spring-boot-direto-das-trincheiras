@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 /.env
+/user-service-SBDDT/src/main/resources/.env
