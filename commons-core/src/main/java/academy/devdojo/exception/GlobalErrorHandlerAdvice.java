@@ -22,4 +22,11 @@ public class GlobalErrorHandlerAdvice {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
+
+    @ExceptionHandler(EmailExistsException.class)
+    public ResponseEntity<DefaultErrorMessage> handleEmailExistsException(EmailExistsException e) {
+        var error = new DefaultErrorMessage(HttpStatus.BAD_REQUEST.value(), e.getReason());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 }

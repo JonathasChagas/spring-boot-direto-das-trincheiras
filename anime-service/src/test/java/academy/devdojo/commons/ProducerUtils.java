@@ -26,4 +26,8 @@ public class ProducerUtils {
     public Producer newProducerToSave() {
         return Producer.builder().name("Aniplex").id(99L).createdAt(LocalDateTime.now()).build();
     }
+
+    public String nameNotFound() {
+        return "not found";
+    }
 }

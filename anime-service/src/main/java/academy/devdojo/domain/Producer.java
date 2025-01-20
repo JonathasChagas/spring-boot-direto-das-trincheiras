@@ -1,21 +1,28 @@
 package academy.devdojo.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
 
 import java.time.LocalDateTime;
 
+@With
 @Getter
 @Setter
+@Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Producer {
     @EqualsAndHashCode.Include
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonProperty("name")
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false, insertable = false, updatable = false)
+    @CreationTimestamp(source = SourceType.DB)
     private LocalDateTime createdAt;
 }
